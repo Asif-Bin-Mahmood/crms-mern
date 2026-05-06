@@ -1,0 +1,78 @@
+/** Mirrors CRMS class diagram enums */
+
+export const UserRole = {
+  ADMIN: 'ADMIN',
+  CUSTOMER: 'CUSTOMER',
+  LEAD_TECHNICIAN: 'LEAD_TECHNICIAN',
+  JUNIOR_TECHNICIAN: 'JUNIOR_TECHNICIAN',
+  DELIVERY_MAN: 'DELIVERY_MAN',
+};
+
+export const Priority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT',
+};
+
+export const RepairStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+};
+
+export const PaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED',
+};
+
+export const DeliveryType = {
+  SMS: 'SMS',
+  EMAIL: 'EMAIL',
+  PUSH: 'PUSH',
+};
+
+export const NotificationTarget = {
+  CUSTOMER: 'CUSTOMER',
+  TECHNICIAN: 'TECHNICIAN',
+};
+
+export const RoleInRepair = {
+  LEAD: 'LEAD',
+  JUNIOR: 'JUNIOR',
+  SUPPORT: 'SUPPORT',
+};
+
+export const DeviceType = {
+  LAPTOP: 'LAPTOP',
+  MOBILE: 'MOBILE',
+  PC: 'PC',
+};
+
+export const DeliveryJobStatus = {
+  PENDING_ASSIGNMENT:   'PENDING_ASSIGNMENT',
+  PENDING_PICKUP:       'PENDING_PICKUP',
+  GOING_TO_CUSTOMER:    'GOING_TO_CUSTOMER',
+  PICKED_UP:            'PICKED_UP',
+  AT_WAREHOUSE:         'AT_WAREHOUSE',
+  PENDING_TECH_DELIVERY:'PENDING_TECH_DELIVERY',
+  GOING_TO_TECHNICIAN:  'GOING_TO_TECHNICIAN',
+  AT_TECHNICIAN:        'AT_TECHNICIAN',
+  PENDING_RETURN:       'PENDING_RETURN',
+  GOING_TO_WAREHOUSE_RETURN: 'GOING_TO_WAREHOUSE_RETURN',
+  AT_WAREHOUSE_FINAL:   'AT_WAREHOUSE_FINAL',
+  PENDING_CUSTOMER_DELIVERY: 'PENDING_CUSTOMER_DELIVERY',
+  WITH_TECHNICIAN:      'WITH_TECHNICIAN',
+  REPAIR_DONE:          'REPAIR_DONE',
+  OUT_FOR_DELIVERY:     'OUT_FOR_DELIVERY',
+  DELIVERED:            'DELIVERED',
+  CANCELLED:            'CANCELLED',
+};
+export const BidStatus = {
+  PENDING: "PENDING",
+  ACCEPTED: "ACCEPTED",
+  REJECTED: "REJECTED",
+};

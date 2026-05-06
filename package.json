@@ -1,0 +1,15 @@
+{
+  "name": "crms-mern",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Computer Repair Management System - MERN stack",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "test": "npm run test --prefix server",
+    "lint": "npm run lint --prefix server && npm run lint --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
