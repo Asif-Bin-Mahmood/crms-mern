@@ -309,7 +309,7 @@ export default function CustomerDashboard() {
                         <button
                           onClick={() => {
                             const { jsPDF } = window.jspdf || {};
-                            import('../components/DemoPaymentModal.jsx').then(() => {
+                            Promise.resolve().then(() => {
                               // trigger download via dynamic import — use the receipt stored
                               const event = new CustomEvent('crms-download-receipt', { detail: cachedReceipt });
                               window.dispatchEvent(event);

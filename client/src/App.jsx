@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext.jsx';
 import Layout from './components/Layout.jsx';
 import Login from './pages/Login.jsx';
@@ -21,8 +21,12 @@ import PaymentFail from './pages/PaymentFail.jsx';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
+  const location = useLocation();
   if (loading) return <p>Loading…</p>;
   if (!user) return <Navigate to="/login" replace />;
+  if (user.role === 'DELIVERY_MAN' && location.pathname !== '/delivery') {
+    return <Navigate to="/delivery" replace />;
+  }
   return children;
 }
 
