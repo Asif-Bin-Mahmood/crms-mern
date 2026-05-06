@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import api, { setAuthToken } from '../api/client.js';
+import api, { getAuthToken, setAuthToken } from '../api/client.js';
 
 const AuthContext = createContext(null);
 
@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   async function refresh() {
-    const t = localStorage.getItem('crms_token');
+    const t = getAuthToken();
     if (!t) {
       setUser(null);
       setLoading(false);
@@ -31,12 +31,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   function login(token, u) {
-    setAuthToken(token);
+    setAuthToken(token, u?.role);
     setUser(u);
   }
 
   function logout() {
-    setAuthToken(null);
+    setAuthToken(null, user?.role);
     setUser(null);
   }
 

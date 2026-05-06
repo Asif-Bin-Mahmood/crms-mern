@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getAuthToken } from '../api/client.js';
 
 const METHODS = [
   { id: 'CARD', label: '💳 Credit / Debit Card' },
@@ -18,7 +19,7 @@ async function handleDownloadReceipt(transactionId, setReceiptLoading, setReceip
   setReceiptLoading(true);
   setReceiptError('');
   try {
-    const token = localStorage.getItem('crms_token');
+    const token = getAuthToken();
     const response = await fetch(`/api/payment/demo/receipt/${transactionId}`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
@@ -84,7 +85,7 @@ export default function DemoPaymentModal({ bill, onClose, onSuccess }) {
     setStep('processing');
     setApiError('');
     try {
-      const token = localStorage.getItem('crms_token');
+      const token = getAuthToken();
       const res = await fetch('/api/payment/demo/pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
