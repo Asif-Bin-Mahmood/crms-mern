@@ -14,6 +14,12 @@ export async function createBid(req, res) {
     if (!estimatedAmount || !estimatedDays) {
       return fail(res, 'estimatedAmount and estimatedDays required', 400);
     }
+    if (Number(estimatedAmount) <= 0) {
+      return fail(res, 'estimatedAmount must be a positive number', 400);
+    }
+    if (Number(estimatedDays) <= 0) {
+      return fail(res, 'estimatedDays must be a positive number', 400);
+    }
 
     const repair = await RepairRequest.findById(repairRequestId);
     if (!repair) return fail(res, 'Repair not found', 404);
@@ -73,8 +79,11 @@ export async function acceptBid(req, res) {
     if (repair.customerId.toString() !== req.user.id) {
       return fail(res, 'Forbidden', 403);
     }
+    if (bid.status !== BidStatus.PENDING) {
+      return fail(res, `Cannot accept a bid that is already ${bid.status}`, 400);
+    }
     if (repair.currentStatus !== RepairStatus.PENDING) {
-      return fail(res, 'A bid has already been accepted', 400);
+      return fail(res, 'A bid has already been accepted for this repair', 400);
     }
 
    
@@ -129,6 +138,12 @@ export async function rejectBid(req, res) {
     if (!repair) return fail(res, 'Repair not found', 404);
     if (repair.customerId.toString() !== req.user.id) {
       return fail(res, 'Forbidden', 403);
+    }
+    if (bid.status === BidStatus.ACCEPTED) {
+      return fail(res, 'Cannot reject a bid that has already been accepted', 400);
+    }
+    if (bid.status === BidStatus.REJECTED) {
+      return fail(res, 'Bid is already rejected', 400);
     }
 
     bid.status = BidStatus.REJECTED;
