@@ -43,6 +43,7 @@ export default function RepairDetailPage() {
   const [bidMessage, setBidMessage] = useState('');
   const [myBid, setMyBid] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [confirmBidId, setConfirmBidId] = useState(null); // inline confirm state
 
   const isCompleted = repair?.currentStatus === 'COMPLETED';
   const isTech = ['LEAD_TECHNICIAN', 'JUNIOR_TECHNICIAN'].includes(user?.role);
@@ -59,7 +60,8 @@ export default function RepairDetailPage() {
   }
 
   async function loadBids() {
-    if (!['CUSTOMER', 'ADMIN'].includes(user?.role)) return;
+    // Customers, admins AND technicians (assigned) can see bids
+    if (!['CUSTOMER', 'ADMIN', 'LEAD_TECHNICIAN', 'JUNIOR_TECHNICIAN'].includes(user?.role)) return;
     try {
       const { data } = await api.get(`/repairs/${id}/bids`);
       setBids(data.data.bids || []);
@@ -120,12 +122,13 @@ export default function RepairDetailPage() {
 
   // ── Accept Bid (Customer) ──
   async function acceptBid(bidId) {
-    if (!window.confirm('Accept this bid? The technician will be assigned and a delivery man will be notified for pickup.')) return;
     try {
       await api.patch(`/repairs/bids/${bidId}/accept`);
+      setConfirmBidId(null);
       window.alert('Bid accepted! A delivery man will pick up your device.');
       await load(); await loadBids(); await loadDelivery();
     } catch (ex) {
+      setConfirmBidId(null);
       window.alert(ex.response?.data?.message || ex.message);
     }
   }
@@ -250,9 +253,26 @@ export default function RepairDetailPage() {
               </p>
               {bid.message && <p style={{ color: '#6b7280', fontSize: 14, margin: 0 }}>{bid.message}</p>}
               {user?.role === 'CUSTOMER' && bid.status === 'PENDING' && repair.currentStatus === 'PENDING' && (
-                <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem' }}>
-                  <button className="primary" onClick={() => acceptBid(bid._id)}>✅ Accept</button>
-                  <button onClick={() => rejectBid(bid._id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', padding: '0.4rem 1rem', borderRadius: 6, cursor: 'pointer' }}>❌ Reject</button>
+                <div style={{ marginTop: '0.75rem' }}>
+                  {confirmBidId === bid._id ? (
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <span style={{ fontSize: 13, color: '#374151' }}>Accept this bid?</span>
+                      <button
+                        className="primary"
+                        onClick={() => acceptBid(bid._id)}
+                        style={{ padding: '0.3rem 0.9rem', fontSize: 13 }}
+                      >✅ Yes, Accept</button>
+                      <button
+                        onClick={() => setConfirmBidId(null)}
+                        style={{ background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', padding: '0.3rem 0.9rem', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}
+                      >Cancel</button>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button className="primary" onClick={() => setConfirmBidId(bid._id)}>✅ Accept</button>
+                      <button onClick={() => rejectBid(bid._id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', padding: '0.4rem 1rem', borderRadius: 6, cursor: 'pointer' }}>❌ Reject</button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

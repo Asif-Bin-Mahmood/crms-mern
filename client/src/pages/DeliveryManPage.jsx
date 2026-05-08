@@ -74,6 +74,8 @@ export default function DeliveryManPage() {
   const [loading, setLoading]         = useState(true);
   const [payLoading, setPayLoading]   = useState(false);
   const [search, setSearch]           = useState('');
+  const [confirmJobId, setConfirmJobId]     = useState(null); // for accept job confirm
+  const [confirmNextId, setConfirmNextId]   = useState(null); // for mark next confirm
 
   async function fetchJobs() {
     try {
@@ -97,15 +99,26 @@ export default function DeliveryManPage() {
   useEffect(() => { if (activeTab === 'payment-history' && payHistory.length === 0) fetchPay(); }, [activeTab]);
 
   async function acceptJob(id) {
-    if (!window.confirm('Accept this job?')) return;
-    try { await api.post(`/delivery/${id}/accept`); await fetchJobs(); window.alert('Job accepted!'); }
-    catch (ex) { window.alert(ex.response?.data?.message || ex.message); }
+    try {
+      await api.post(`/delivery/${id}/accept`);
+      setConfirmJobId(null);
+      await fetchJobs();
+      window.alert('Job accepted!');
+    } catch (ex) {
+      setConfirmJobId(null);
+      window.alert(ex.response?.data?.message || ex.message);
+    }
   }
 
   async function markNext(id, nextStatus) {
-    if (!window.confirm(`Mark as: ${NEXT_LABEL[nextStatus] || nextStatus}?`)) return;
-    try { await api.patch(`/delivery/${id}/status`, { status: nextStatus }); await fetchJobs(); }
-    catch (ex) { window.alert(ex.response?.data?.message || ex.message); }
+    try {
+      await api.patch(`/delivery/${id}/status`, { status: nextStatus });
+      setConfirmNextId(null);
+      await fetchJobs();
+    } catch (ex) {
+      setConfirmNextId(null);
+      window.alert(ex.response?.data?.message || ex.message);
+    }
   }
 
   const filtered = payHistory.filter(p => {
@@ -174,9 +187,17 @@ export default function DeliveryManPage() {
                 <span style={{ gridColumn: '1/-1' }}>📍 {job.customerAddress}</span>
                 <span style={{ gridColumn: '1/-1' }}>🛠️ {job.repairRequestId?.issueDescription}</span>
               </div>
-              <button className="success" style={{ width: '100%', justifyContent: 'center', padding: '0.6rem' }} onClick={() => acceptJob(job._id)}>
-                ✅ Accept This Job
-              </button>
+              {confirmJobId === job._id ? (
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginTop: '0.5rem' }}>
+                  <span style={{ fontSize: 13 }}>Accept this job?</span>
+                  <button className="success" style={{ padding: '0.35rem 1rem' }} onClick={() => acceptJob(job._id)}>✅ Yes</button>
+                  <button className="ghost" style={{ padding: '0.35rem 0.75rem' }} onClick={() => setConfirmJobId(null)}>Cancel</button>
+                </div>
+              ) : (
+                <button className="success" style={{ width: '100%', justifyContent: 'center', padding: '0.6rem' }} onClick={() => setConfirmJobId(job._id)}>
+                  ✅ Accept This Job
+                </button>
+              )}
             </div>
           ))
       )}
@@ -219,10 +240,18 @@ export default function DeliveryManPage() {
               </div>
 
               {NEXT_STATUS[job.status] && (
-                <button className="primary" style={{ width: '100%', justifyContent: 'center', padding: '0.6rem', marginTop: '0.75rem' }}
-                  onClick={() => markNext(job._id, NEXT_STATUS[job.status])}>
-                  ✅ {NEXT_LABEL[NEXT_STATUS[job.status]] || STATUS_LABELS[NEXT_STATUS[job.status]]}
-                </button>
+                confirmNextId === job._id ? (
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginTop: '0.75rem' }}>
+                    <span style={{ fontSize: 13 }}>Mark as: {NEXT_LABEL[NEXT_STATUS[job.status]] || NEXT_STATUS[job.status]}?</span>
+                    <button className="primary" style={{ padding: '0.35rem 1rem' }} onClick={() => markNext(job._id, NEXT_STATUS[job.status])}>✅ Yes</button>
+                    <button className="ghost" style={{ padding: '0.35rem 0.75rem' }} onClick={() => setConfirmNextId(null)}>Cancel</button>
+                  </div>
+                ) : (
+                  <button className="primary" style={{ width: '100%', justifyContent: 'center', padding: '0.6rem', marginTop: '0.75rem' }}
+                    onClick={() => setConfirmNextId(job._id)}>
+                    ✅ {NEXT_LABEL[NEXT_STATUS[job.status]] || STATUS_LABELS[NEXT_STATUS[job.status]]}
+                  </button>
+                )
               )}
               {job.status === 'DELIVERED' && (
                 <div style={{ textAlign: 'center', marginTop: '0.75rem', color: 'var(--success)', fontWeight: 700 }}>🎉 Job Complete!</div>
