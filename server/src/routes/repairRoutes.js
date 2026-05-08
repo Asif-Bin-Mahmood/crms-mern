@@ -16,7 +16,7 @@ r.patch('/:id/status', ctrl.updateRepairStatus);
 
 r.post(
   '/:repairRequestId/assign',
-  requireRoles(UserRole.ADMIN, UserRole.LEAD_TECHNICIAN),
+  requireRoles(UserRole.ADMIN),
   assign.assignTechnician
 );
 r.get('/:repairRequestId/assignments', assign.listAssignments);

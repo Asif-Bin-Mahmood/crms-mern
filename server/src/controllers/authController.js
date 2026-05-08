@@ -12,7 +12,7 @@ export async function register(req, res) {
     const allowedSelfRegister = [UserRole.CUSTOMER, UserRole.DELIVERY_MAN];
     const r = role || UserRole.CUSTOMER;
     if (!allowedSelfRegister.includes(r)) {
-      return fail(res, 'Only CUSTOMER self-registration is allowed', 403);
+      return fail(res, 'Self-registration is only allowed for CUSTOMER and DELIVERY_MAN roles', 403);
     }
     const exists = await User.findOne({ email });
     if (exists) return fail(res, 'Email already registered', 409);

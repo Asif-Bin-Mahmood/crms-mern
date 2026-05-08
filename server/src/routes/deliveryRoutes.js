@@ -17,11 +17,28 @@ import {
 const router = Router();
 router.use(requireAuth);
 
-router.get("/available", requireRoles(UserRole.DELIVERY_MAN), listAvailableJobs);
-router.get("/my-jobs", requireRoles(UserRole.DELIVERY_MAN), listMyJobs);
-router.post("/:id/accept", requireRoles(UserRole.DELIVERY_MAN), acceptDeliveryJob);
-router.patch("/:id/status", requireRoles(UserRole.DELIVERY_MAN), updateDeliveryStatus);
-router.get("/by-repair/:repairId", requireRoles(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.LEAD_TECHNICIAN, UserRole.JUNIOR_TECHNICIAN), getDeliveryJobByRepair);
+// ── Delivery Man routes ──────────────────────────────────────────────────────
+router.get("/available",       requireRoles(UserRole.DELIVERY_MAN), listAvailableJobs);
+router.get("/my-jobs",         requireRoles(UserRole.DELIVERY_MAN), listMyJobs);
+router.get("/payment-history", requireRoles(UserRole.DELIVERY_MAN), getCustomerPaymentHistory);
+router.post("/:id/accept",     requireRoles(UserRole.DELIVERY_MAN), acceptDeliveryJob);
+router.patch("/:id/status",    requireRoles(UserRole.DELIVERY_MAN), updateDeliveryStatus);
+
+// ── Shared tracking route (customer, admin, technicians, delivery man) ────────
+router.get(
+  "/by-repair/:repairId",
+  requireRoles(
+    UserRole.ADMIN,
+    UserRole.CUSTOMER,
+    UserRole.LEAD_TECHNICIAN,
+    UserRole.JUNIOR_TECHNICIAN,
+    UserRole.DELIVERY_MAN
+  ),
+  getDeliveryJobByRepair
+);
+
+// ── Admin routes ─────────────────────────────────────────────────────────────
+router.get("/", requireRoles(UserRole.ADMIN), listDeliveryJobs);
 router.delete("/:id", requireRoles(UserRole.ADMIN), async (req, res) => {
   try {
     await DeliveryJob.findByIdAndDelete(req.params.id);
@@ -30,8 +47,12 @@ router.delete("/:id", requireRoles(UserRole.ADMIN), async (req, res) => {
     return fail(res, err.message, 500);
   }
 });
-router.get("/", requireRoles(UserRole.ADMIN), listDeliveryJobs);
-router.get("/payment-history", requireRoles(UserRole.DELIVERY_MAN), getCustomerPaymentHistory);
-router.get("/:id", requireRoles(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.DELIVERY_MAN), getDeliveryJob);
+
+// ── Single job detail ─────────────────────────────────────────────────────────
+router.get(
+  "/:id",
+  requireRoles(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.DELIVERY_MAN),
+  getDeliveryJob
+);
 
 export default router;

@@ -11,7 +11,7 @@ router.post('/:repairRequestId/bids',
   createBid
 );
 router.get('/:repairRequestId/bids',
-  requireRoles(UserRole.CUSTOMER, UserRole.ADMIN),
+  requireRoles(UserRole.CUSTOMER, UserRole.ADMIN, UserRole.LEAD_TECHNICIAN, UserRole.JUNIOR_TECHNICIAN),
   listBids
 );
 router.patch('/bids/:bidId/accept', requireRoles(UserRole.CUSTOMER), acceptBid);

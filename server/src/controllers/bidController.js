@@ -27,6 +27,12 @@ export async function createBid(req, res) {
       return fail(res, 'Can only bid on PENDING repairs', 400);
     }
 
+    // Technician must be assigned to this repair by admin before bidding
+    const assignment = await AssignedTo.findOne({ repairRequestId, technicianId: req.user.id });
+    if (!assignment) {
+      return fail(res, 'You are not assigned to this repair request', 403);
+    }
+
     const bid = await Bid.findOneAndUpdate(
       { repairRequestId, technicianId: req.user.id },
       {
@@ -51,14 +57,21 @@ export async function listBids(req, res) {
     const repair = await RepairRequest.findById(repairRequestId);
     if (!repair) return fail(res, 'Repair not found', 404);
 
+    // Customer can only see bids on their own repair
     if (req.user.role === UserRole.CUSTOMER &&
         repair.customerId.toString() !== req.user.id) {
       return fail(res, 'Forbidden', 403);
     }
 
+    // Technicians can only see bids on repairs assigned to them
+    if ([UserRole.LEAD_TECHNICIAN, UserRole.JUNIOR_TECHNICIAN].includes(req.user.role)) {
+      const assigned = await AssignedTo.findOne({ repairRequestId, technicianId: req.user.id });
+      if (!assigned) return fail(res, 'Forbidden', 403);
+    }
+
     const bids = await Bid.find({ repairRequestId })
       .populate('technicianId', 'name email role')
-      .sort({ estimatedAmount: 1 }); 
+      .sort({ estimatedAmount: 1 });
 
     return ok(res, { bids });
   } catch (err) {

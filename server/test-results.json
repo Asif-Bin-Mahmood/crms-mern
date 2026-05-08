@@ -1,0 +1,282 @@
+[
+  {
+    "feature": "Feature 1",
+    "tcId": "TC-BID-01",
+    "title": "Submit a valid bid",
+    "actual": "status=201 bidId=69fcea674bd0d657c518a0a0",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 1",
+    "tcId": "TC-BID-02",
+    "title": "Submit bid without Estimated Amount",
+    "actual": "status=400 msg=estimatedAmount and estimatedDays required",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 1",
+    "tcId": "TC-BID-03",
+    "title": "Submit bid without Estimated Days",
+    "actual": "status=400",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 1",
+    "tcId": "TC-BID-04",
+    "title": "Submit bid with negative amount",
+    "actual": "status=400 — blocked",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 1",
+    "tcId": "TC-BID-05",
+    "title": "Submit bid without login",
+    "actual": "status=401",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 1",
+    "tcId": "TC-BID-06",
+    "title": "Submit bid as Customer role",
+    "actual": "status=403",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 2",
+    "tcId": "TC-CBID-01",
+    "title": "Customer views bids for their repair",
+    "actual": "status=200 count=1",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 2",
+    "tcId": "TC-CBID-02",
+    "title": "Customer views repair with no bids",
+    "actual": "status=200 count=0",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 2",
+    "tcId": "TC-CBID-03",
+    "title": "Customer cannot view another customer's bids",
+    "actual": "status=403",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 2",
+    "tcId": "TC-CBID-05",
+    "title": "Customer rejects a bid",
+    "actual": "status=200 bidStatus=REJECTED",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 2",
+    "tcId": "TC-CBID-06",
+    "title": "Accept already-rejected bid blocked",
+    "actual": "status=400",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 2",
+    "tcId": "TC-CBID-04",
+    "title": "Customer accepts a valid bid",
+    "actual": "status=200 msg=Bid accepted! Delivery men notified for pickup.",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 3",
+    "tcId": "TC-BAW-01",
+    "title": "Technician auto-assigned after bid acceptance",
+    "actual": "status=200 msg=Bid accepted! Delivery men notified for pickup.",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 3",
+    "tcId": "TC-BAW-02",
+    "title": "Other bids auto-rejected",
+    "actual": "bidB status=REJECTED",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 3",
+    "tcId": "TC-BAW-03",
+    "title": "Delivery job auto-created after bid acceptance",
+    "actual": "status=200 jobStatus=PENDING_PICKUP",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 3",
+    "tcId": "TC-BAW-04",
+    "title": "Cannot accept bid on non-PENDING repair",
+    "actual": "status=400",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 5",
+    "tcId": "TC-DLV-01",
+    "title": "Delivery man self-registers",
+    "actual": "status=201 role=DELIVERY_MAN",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 5",
+    "tcId": "TC-DLV-03",
+    "title": "Delivery man can access delivery dashboard",
+    "actual": "status=200",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 5",
+    "tcId": "TC-DLV-04",
+    "title": "Non-delivery-man blocked from delivery dashboard",
+    "actual": "status=403",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 6",
+    "tcId": "TC-DASH-01",
+    "title": "Dashboard shows available jobs",
+    "actual": "status=200 count=2",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 6",
+    "tcId": "TC-DASH-03",
+    "title": "Dashboard shows active jobs list",
+    "actual": "status=200",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 7",
+    "tcId": "TC-DJOB-01",
+    "title": "Delivery man accepts available job",
+    "actual": "status=200 newStatus=GOING_TO_CUSTOMER",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 6",
+    "tcId": "TC-DASH-02",
+    "title": "Active job appears in my-jobs after acceptance",
+    "actual": "status=200 count=1",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 7",
+    "tcId": "TC-DJOB-02",
+    "title": "Cannot accept already-taken job",
+    "actual": "status=400 msg=Job is not available for acceptance (current: GOING_TO_CUSTOMER)",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 7",
+    "tcId": "TC-DJOB-03",
+    "title": "Customer cannot accept delivery job",
+    "actual": "status=403",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 8",
+    "tcId": "TC-DSW-02",
+    "title": "Invalid status transition rejected",
+    "actual": "status=400 msg=Cannot move from GOING_TO_CUSTOMER to DELIVERED",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 8",
+    "tcId": "TC-DSW-04",
+    "title": "Only assigned delivery man can update status",
+    "actual": "status=403",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 8",
+    "tcId": "TC-DSW-01",
+    "title": "Valid: GOING_TO_CUSTOMER → PICKED_UP",
+    "actual": "status=200 newStatus=PICKED_UP",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 8",
+    "tcId": "TC-DSW-03",
+    "title": "Valid: PICKED_UP → AT_WAREHOUSE",
+    "actual": "status=200 newStatus=PENDING_TECH_DELIVERY",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 9",
+    "tcId": "TC-DHIST-01",
+    "title": "Status history recorded after each update",
+    "actual": "entries=5",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 9",
+    "tcId": "TC-DHIST-02",
+    "title": "Multiple history entries accumulate",
+    "actual": "entries=5",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 9",
+    "tcId": "TC-DHIST-03",
+    "title": "Admin can read status history",
+    "actual": "status=200 entries=5",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 11",
+    "tcId": "TC-DTRK-01",
+    "title": "Customer views delivery tracking",
+    "actual": "status=200",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 11",
+    "tcId": "TC-DTRK-02",
+    "title": "Admin views delivery tracking",
+    "actual": "status=200",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 11",
+    "tcId": "TC-DTRK-03",
+    "title": "Technician views delivery tracking",
+    "actual": "status=200",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 11",
+    "tcId": "TC-DTRK-04",
+    "title": "Other customer blocked from repair tracking",
+    "actual": "status=403",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 12",
+    "tcId": "TC-RBAC-01",
+    "title": "Customer blocked from delivery dashboard",
+    "actual": "status=403",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 12",
+    "tcId": "TC-RBAC-03",
+    "title": "Unauthenticated gets 401",
+    "actual": "status=401",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 12",
+    "tcId": "TC-RBAC-04",
+    "title": "Customer cannot update delivery status",
+    "actual": "status=403",
+    "pass": "Pass"
+  },
+  {
+    "feature": "Feature 12",
+    "tcId": "TC-RBAC-05",
+    "title": "Technician cannot accept delivery job",
+    "actual": "status=403",
+    "pass": "Pass"
+  }
+]
